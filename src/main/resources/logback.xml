@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- scanPeriod,设置扫描的时间间隔 -->
+<configuration scan="true" scanPeriod="60 seconds"
+	debug="true">
+	<!--针对jul的性能优化 -->
+	<contextListener
+		class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+	<!-- 定义参数常量 -->
+	<!-- 优先级：TRACE<DEBUG<INFO<WARN<ERROR -->
+	<!-- logback的显示规则： 1.显示logger实例 2.然后依次调用：logger.trace("msg") logger.debug 
+		实际项目中常用的三类日志为：DEBUG,INFO,ERROR -->
+	<property name="APP_NAME" value="o2o" />
+	<property name="log.level" value="debug" />
+	<property name="log.MaxHistory" value="30" />
+	<property name="log.filePath"
+		value="${catalina.base}/logs/webapps" />
+	<property name="log.pattern"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}-%msg%n" />
+		<!-- 配置输出到控制台，仅在开发测试时启用输出到控制台 ，下面的语句在window环境下生效，使用mac或者ubuntu的同学，请自己构造下 -->
+	<if
+		condition='property("os.name").toUpperCase().contains("WINDOWS") || property("os.name").toUpperCase().contains("MAC")'>
+		<then>
+			<!-- 控制台设置 -->
+			<appender name="consoleAppender"
+				class="ch.qos.logback.core.ConsoleAppender">
+				<!-- “encoder”标签的作用：负责转换编码方式和负责输出 到文件 -->
+				<encoder>
+					<pattern>${log.pattern}</pattern>
+				</encoder>
+			</appender>
+			<root>
+				<appender-ref ref="consoleAppender" />
+			</root>
+		</then>
+	</if>
+	<!-- DEBUG -->
+	<appender name="debugAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.filePath}/debug.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.filePath}/debug/debug.%d{yyyy-MM-dd}.%i
+			</fileNamePattern>
+			<!-- 文件最大保存历史数量 -->
+			<maxHistory>${log.MaxHistory}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+	</appender>
+	<!-- INFO -->
+	<appender name="infoAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.filePath}/info.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.filePath}/info/info.%d{yyyy-MM-dd}.%i
+			</fileNamePattern>
+			<!-- 文件最大保存历史数量 -->
+			<maxHistory>${log.MaxHistory}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+	</appender>
+	<!-- ERROR -->
+	<appender name="errorAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.filePath}/error.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.filePath}/error/error.%d{yyyy-MM-dd}.%i
+			</fileNamePattern>
+			<!-- 文件最大保存历史数量 -->
+				<maxHistory>${log.MaxHistory}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+	</appender>
+	<!-- 存放我们的日志对象,同时告诉我们的logback需要关注哪个package信息 -->
+	<logger name="com.heroking.o2o" level="${log.level}"
+		additivity="true">
+		<appender-ref ref="debugAppender" />
+		<appender-ref ref="infoAppender" />
+		<appender-ref ref="errorAppender" />
+	</logger>
+	<root level="info">
+		<appender-ref ref="consoleAppender" />
+	</root>
+
+</configuration>
