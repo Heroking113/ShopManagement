@@ -10,7 +10,7 @@
 	<url>http://maven.apache.org</url>
 	<!-- 要用到的全局变量都会放在properties里面 -->
 	<properties>
-		<spring.version>4.3.7.RELEASE</spring.version>
+		<spring.version>5.2.4.RELEASE</spring.version>
 	</properties>
 	<dependencies>
 		<dependency>
